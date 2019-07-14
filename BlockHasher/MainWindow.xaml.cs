@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using System.Windows;
 using System.IO;
 using System.Security.Cryptography;
@@ -30,7 +31,7 @@ namespace BlockHasher
                 messageString += "Reading " + filenames[0] + "\n";
                 
                 int blockSize = int.Parse(blocksize.Text, System.Globalization.NumberStyles.HexNumber);
-                messageString += "BLOCK SIZE " + blockSize.ToString() + "\n";
+                messageString += "Block size " + blockSize.ToString() + "\n";
                 
                 byte[] filedata = File.ReadAllBytes(filenames[0]);
                 
@@ -53,9 +54,9 @@ namespace BlockHasher
                 
                 messageString += HashToString(md5Provider.ComputeHash(curpart)) + "\n";
             }
-            catch
+            catch(Exception exception)
             {
-                messageString = "Didn't work";
+                messageString = "An error occurred:\n" + exception.Message;
             }
 
             hashlist.Text += messageString + "\n";
