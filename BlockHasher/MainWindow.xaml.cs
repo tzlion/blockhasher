@@ -15,75 +15,54 @@ namespace BlockHasher
             InitializeComponent();
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            this.Close();
-        }
-
         private void Grid_Drop_1(object sender, DragEventArgs e)
         {
-            bool balls = e.Data.GetDataPresent("FileName");
-            string[] datum = (string[])e.Data.GetData("FileName");
-
-            if (balls)
+            if (!e.Data.GetDataPresent("FileName"))
             {
-
-                string hashstring = "Reading " + datum[0] + "\n";
-
-                try
-                {
-                    int nobytes = int.Parse(blocksize.Text, System.Globalization.NumberStyles.HexNumber);
-
-                    hashstring = hashstring + "BLOCK SIZE " + nobytes.ToString() + "\n";
-
-                    byte[] filedata = File.ReadAllBytes(datum[0]);
-
-                    int bc = 0;
-
-                    byte[] curpart = new byte[nobytes];
-
-                    foreach (byte abyte in filedata)
-                    {
-                       
-
-                        if (bc < nobytes)
-                        {
-                          //  
-                        }
-                        else
-                        { 
-                            hashstring = hashstring + hashtostring(new MD5CryptoServiceProvider().ComputeHash(curpart)) + "\n";
-                            curpart = new byte[nobytes];
-                            bc = 0;
-                        }
-
-
-                        curpart[bc] = abyte;
-
-
-                        bc++;
-                    }
-
-                    hashstring = hashstring + hashtostring(new MD5CryptoServiceProvider().ComputeHash(curpart)) + "\n";
-                   
-
-                }
-                catch
-                {
-                    hashstring = "Didnt work";
-                }
-
-                hashlist.Text = hashlist.Text + hashstring + "\n";
-
-
+                return;
             }
 
+            string messageString = "";
+            
+            try
+            {
+                string[] filenames = (string[])e.Data.GetData("FileName");
+                messageString += "Reading " + filenames[0] + "\n";
+                
+                int blockSize = int.Parse(blocksize.Text, System.Globalization.NumberStyles.HexNumber);
+                messageString += "BLOCK SIZE " + blockSize.ToString() + "\n";
+                
+                byte[] filedata = File.ReadAllBytes(filenames[0]);
+                
+                var md5Provider = new MD5CryptoServiceProvider();
+                
+                int bc = 0;
+                byte[] curpart = new byte[blockSize];
+                
+                foreach (byte abyte in filedata)
+                {
+                    if (bc >= blockSize)
+                    {
+                        messageString += HashToString(md5Provider.ComputeHash(curpart)) + "\n";
+                        curpart = new byte[blockSize];
+                        bc = 0;
+                    }
+                    curpart[bc] = abyte;
+                    bc++;
+                }
+                
+                messageString += HashToString(md5Provider.ComputeHash(curpart)) + "\n";
+            }
+            catch
+            {
+                messageString = "Didn't work";
+            }
+
+            hashlist.Text += messageString + "\n";
         }
 
-
-        private static string hashtostring(byte[] computedHash)
+        private static string HashToString(byte[] computedHash)
         {
-
             var sBuilder = new StringBuilder();
             foreach (byte b in computedHash)
             {
