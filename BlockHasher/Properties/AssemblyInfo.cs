@@ -12,7 +12,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("BlockHasher")]
-[assembly: AssemblyCopyright("Copyright ©  2013")]
+[assembly: AssemblyCopyright("2013-2019 taizou")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
