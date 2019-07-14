@@ -59,6 +59,7 @@ namespace BlockHasher
             }
 
             hashlist.Text += messageString + "\n";
+            hashlist.ScrollToEnd();
         }
 
         private static string HashToString(byte[] computedHash)
