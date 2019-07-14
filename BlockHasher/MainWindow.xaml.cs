@@ -36,10 +36,10 @@ namespace BlockHasher
             
             try
             {
-                messageString += "File " + filename + "\n";
+                messageString += "File " + filename + "\r\n";
                 
                 int blockSize = int.Parse(blocksize.Text, System.Globalization.NumberStyles.HexNumber);
-                messageString += "Block size " + blockSize + "\n";
+                messageString += "Block size " + blockSize + "\r\n";
                 
                 byte[] filedata = File.ReadAllBytes(filename);
                 
@@ -52,7 +52,7 @@ namespace BlockHasher
                 {
                     if (bc >= blockSize)
                     {
-                        messageString += HashToString(md5Provider.ComputeHash(curpart)) + "\n";
+                        messageString += HashToString(md5Provider.ComputeHash(curpart)) + "\r\n";
                         curpart = new byte[blockSize];
                         bc = 0;
                     }
@@ -60,14 +60,14 @@ namespace BlockHasher
                     bc++;
                 }
                 
-                messageString += HashToString(md5Provider.ComputeHash(curpart)) + "\n";
+                messageString += HashToString(md5Provider.ComputeHash(curpart)) + "\r\n";
             }
             catch(Exception exception)
             {
-                messageString = "An error occurred:\n" + exception.Message;
+                messageString = "An error occurred:\r\n" + exception.Message;
             }
 
-            hashlist.Text += messageString + "\n";
+            hashlist.Text += messageString + "\r\n";
             hashlist.ScrollToEnd();
         }
         
