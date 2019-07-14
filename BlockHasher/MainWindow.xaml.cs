@@ -16,24 +16,32 @@ namespace BlockHasher
             InitializeComponent();
         }
 
-        private void Grid_Drop_1(object sender, DragEventArgs e)
+        private void ProcessDroppedFiles(object sender, DragEventArgs e)
         {
             if (!e.Data.GetDataPresent("FileName"))
             {
                 return;
             }
+            
+            string[] filenames = (string[])e.Data.GetData(DataFormats.FileDrop);
+            foreach(string filename in filenames)
+            {
+                processSingleFile(filename);
+            }
+        }
 
+        private void processSingleFile(string filename)
+        {
             string messageString = "";
             
             try
             {
-                string[] filenames = (string[])e.Data.GetData("FileName");
-                messageString += "Reading " + filenames[0] + "\n";
+                messageString += "File " + filename + "\n";
                 
                 int blockSize = int.Parse(blocksize.Text, System.Globalization.NumberStyles.HexNumber);
-                messageString += "Block size " + blockSize.ToString() + "\n";
+                messageString += "Block size " + blockSize + "\n";
                 
-                byte[] filedata = File.ReadAllBytes(filenames[0]);
+                byte[] filedata = File.ReadAllBytes(filename);
                 
                 var md5Provider = new MD5CryptoServiceProvider();
                 
@@ -62,7 +70,7 @@ namespace BlockHasher
             hashlist.Text += messageString + "\n";
             hashlist.ScrollToEnd();
         }
-
+        
         private static string HashToString(byte[] computedHash)
         {
             var sBuilder = new StringBuilder();
