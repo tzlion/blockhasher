@@ -15,7 +15,7 @@ using System.Windows.Shapes;
 using System.IO;
 using System.Security.Cryptography;
 
-namespace BlockHashshajhehjfs
+namespace BlockHasher
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

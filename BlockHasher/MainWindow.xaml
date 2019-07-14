@@ -1,4 +1,4 @@
-﻿<Window x:Class="BlockHashshajhehjfs.MainWindow"
+﻿<Window x:Class="BlockHasher.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="BLOXKHASH" Height="613.274" Width="630.31" ResizeMode="CanMinimize" AllowDrop="True">
