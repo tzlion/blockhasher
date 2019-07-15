@@ -10,36 +10,12 @@ namespace BlockHasher
     {
         public static string BuildStringForFile(string filename, int blockSize)
         {
-            string messageString = "";
+            string messageString = "File " + filename + "\r\n" + "Block size " + blockSize + "\r\n";
             
             try
             {
-                messageString += "File " + filename + "\r\n";
-                
-                messageString += "Block size " + blockSize + "\r\n";
-                
-                byte[] filedata = File.ReadAllBytes(filename);
-                
-                var md5Provider = new MD5CryptoServiceProvider();
-                
-                int bc = 0;
-                byte[] curpart = new byte[blockSize];
-
-                var hashes = new List<byte[]>();
-                
-                foreach (byte abyte in filedata)
-                {
-                    if (bc >= blockSize)
-                    {
-                        hashes.Add(md5Provider.ComputeHash(curpart));
-                        curpart = new byte[blockSize];
-                        bc = 0;
-                    }
-                    curpart[bc] = abyte;
-                    bc++;
-                }
-                hashes.Add(md5Provider.ComputeHash(curpart));
-
+                byte[] fileData = File.ReadAllBytes(filename);
+                var hashes = BuildHashList(fileData, blockSize);
                 foreach (byte[] hash in hashes)
                 {
                     messageString += HashToString(hash) + "\r\n";
@@ -51,6 +27,28 @@ namespace BlockHasher
             }
 
             return messageString;
+        }
+
+        private static List<byte[]> BuildHashList(byte[] fileData, int blockSize)
+        {
+            var md5Provider = new MD5CryptoServiceProvider();
+                
+            int bytePosInBlock = 0;
+            byte[] currentBlockData = new byte[blockSize];
+            var hashes = new List<byte[]>();
+            foreach (byte currentByte in fileData)
+            {
+                if (bytePosInBlock >= blockSize)
+                {
+                    hashes.Add(md5Provider.ComputeHash(currentBlockData));
+                    currentBlockData = new byte[blockSize];
+                    bytePosInBlock = 0;
+                }
+                currentBlockData[bytePosInBlock] = currentByte;
+                bytePosInBlock++;
+            }
+            hashes.Add(md5Provider.ComputeHash(currentBlockData));
+            return hashes;
         }
 
         private static string HashToString(byte[] computedHash)
