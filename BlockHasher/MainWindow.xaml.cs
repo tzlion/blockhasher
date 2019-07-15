@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Text;
 using System.Windows;
-using System.IO;
-using System.Security.Cryptography;
 
 namespace BlockHasher
 {
@@ -18,7 +15,7 @@ namespace BlockHasher
 
         private void ProcessDroppedFiles(object sender, DragEventArgs e)
         {
-            if (!e.Data.GetDataPresent("FileName"))
+            if (!e.Data.GetDataPresent(DataFormats.FileDrop))
             {
                 return;
             }
@@ -28,63 +25,26 @@ namespace BlockHasher
             {
                 return;
             }
-            
-            foreach(string filename in filenames)
-            {
-                var messageString = BuildStringForFile(filename);
-                hashlist.Text += messageString + "\r\n";
-                hashlist.ScrollToEnd();
-            }
-        }
 
-        private string BuildStringForFile(string filename)
-        {
-            string messageString = "";
+            int blockSize;
             
             try
             {
-                messageString += "File " + filename + "\r\n";
-                
-                int blockSize = int.Parse(blocksize.Text, System.Globalization.NumberStyles.HexNumber);
-                messageString += "Block size " + blockSize + "\r\n";
-                
-                byte[] filedata = File.ReadAllBytes(filename);
-                
-                var md5Provider = new MD5CryptoServiceProvider();
-                
-                int bc = 0;
-                byte[] curpart = new byte[blockSize];
-                
-                foreach (byte abyte in filedata)
-                {
-                    if (bc >= blockSize)
-                    {
-                        messageString += HashToString(md5Provider.ComputeHash(curpart)) + "\r\n";
-                        curpart = new byte[blockSize];
-                        bc = 0;
-                    }
-                    curpart[bc] = abyte;
-                    bc++;
-                }
-                
-                messageString += HashToString(md5Provider.ComputeHash(curpart)) + "\r\n";
+                blockSize = int.Parse(blocksize.Text, System.Globalization.NumberStyles.HexNumber);
             }
-            catch(Exception exception)
+            catch
             {
-                messageString += "An error occurred:\r\n" + exception.Message;
+                hashlist.Text += "Invalid block size" + "\r\n";
+                hashlist.ScrollToEnd();
+                return;
             }
-
-            return messageString;
-        }
-        
-        private static string HashToString(byte[] computedHash)
-        {
-            var stringBuilder = new StringBuilder();
-            foreach (byte b in computedHash)
+            
+            foreach(string filename in filenames)
             {
-                stringBuilder.Append(b.ToString("x2").ToLower());
+                var messageString = FileHashStringGenerator.BuildStringForFile(filename, blockSize);
+                hashlist.Text += messageString + "\r\n";
+                hashlist.ScrollToEnd();
             }
-            return stringBuilder.ToString();
         }
     }
 }
