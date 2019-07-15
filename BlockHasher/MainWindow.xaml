@@ -13,6 +13,5 @@
         <TextBox x:Name="blocksize" HorizontalAlignment="Left" Height="41" Margin="312,10,0,0" TextWrapping="Wrap" Text="100000" VerticalAlignment="Top" Width="102" FontSize="22"/>
         <Label Content="BLOCK SIZE IN HEX" HorizontalAlignment="Left" Margin="419,19,0,0" VerticalAlignment="Top"/>
         <Label Content="DROP A FILE HERE" HorizontalAlignment="Left" Margin="406,313,0,0" VerticalAlignment="Top"/>
-
     </Grid>
 </Window>

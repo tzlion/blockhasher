@@ -24,13 +24,20 @@ namespace BlockHasher
             }
             
             string[] filenames = (string[])e.Data.GetData(DataFormats.FileDrop);
+            if (filenames == null || filenames.Length < 1)
+            {
+                return;
+            }
+            
             foreach(string filename in filenames)
             {
-                processSingleFile(filename);
+                var messageString = BuildStringForFile(filename);
+                hashlist.Text += messageString + "\r\n";
+                hashlist.ScrollToEnd();
             }
         }
 
-        private void processSingleFile(string filename)
+        private string BuildStringForFile(string filename)
         {
             string messageString = "";
             
@@ -64,21 +71,20 @@ namespace BlockHasher
             }
             catch(Exception exception)
             {
-                messageString = "An error occurred:\r\n" + exception.Message;
+                messageString += "An error occurred:\r\n" + exception.Message;
             }
 
-            hashlist.Text += messageString + "\r\n";
-            hashlist.ScrollToEnd();
+            return messageString;
         }
         
         private static string HashToString(byte[] computedHash)
         {
-            var sBuilder = new StringBuilder();
+            var stringBuilder = new StringBuilder();
             foreach (byte b in computedHash)
             {
-                sBuilder.Append(b.ToString("x2").ToLower());
+                stringBuilder.Append(b.ToString("x2").ToLower());
             }
-            return sBuilder.ToString();
+            return stringBuilder.ToString();
         }
     }
 }
