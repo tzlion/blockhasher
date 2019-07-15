@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
@@ -23,20 +24,26 @@ namespace BlockHasher
                 
                 int bc = 0;
                 byte[] curpart = new byte[blockSize];
+
+                var hashes = new List<byte[]>();
                 
                 foreach (byte abyte in filedata)
                 {
                     if (bc >= blockSize)
                     {
-                        messageString += HashToString(md5Provider.ComputeHash(curpart)) + "\r\n";
+                        hashes.Add(md5Provider.ComputeHash(curpart));
                         curpart = new byte[blockSize];
                         bc = 0;
                     }
                     curpart[bc] = abyte;
                     bc++;
                 }
-                
-                messageString += HashToString(md5Provider.ComputeHash(curpart)) + "\r\n";
+                hashes.Add(md5Provider.ComputeHash(curpart));
+
+                foreach (byte[] hash in hashes)
+                {
+                    messageString += HashToString(hash) + "\r\n";
+                }
             }
             catch(Exception exception)
             {
